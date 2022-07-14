@@ -8,6 +8,7 @@
     Title="MainWindow"
     Width="800"
     Height="450"
+    Loaded="Window_Loaded"
     WindowState="Maximized"
     mc:Ignorable="d">
 
@@ -29,13 +30,18 @@
             x:Name="borderCanvas"
             Grid.Column="0"
             Margin="0"
+            Background="LightGray"
             BorderBrush="Gray"
-            BorderThickness="3"
-            Background="Black">
+            RenderOptions.BitmapScalingMode="NearestNeighbor"
+            RenderOptions.EdgeMode="Aliased"
+            BorderThickness="3">
             <Image
                 x:Name="gameImage"
                 HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch" />
+                VerticalAlignment="Stretch"
+                RenderOptions.BitmapScalingMode="NearestNeighbor"
+                RenderOptions.EdgeMode="Aliased"
+                Stretch="None" />
         </Border>
 
         <Grid Grid.Column="1">
