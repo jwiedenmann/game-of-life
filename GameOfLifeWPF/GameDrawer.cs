@@ -18,7 +18,7 @@ namespace GameOfLifeWPF
             _writeableBitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
             _colorChannelBytes = 4;
 
-            CellSize = 50;
+            CellSize = 10;
             GridThickness = 3;
             ShowGridLines = true;
 
@@ -63,19 +63,26 @@ namespace GameOfLifeWPF
             }
         }
 
-        public WriteableBitmap Draw()
+        public WriteableBitmap Draw(bool[,] cells)
         {
+            if (cells.Length != Cells.Length)
+            {
+                return _writeableBitmap;
+            }
+
             if (!NeedRedraw)
             {
+                UpdateCells(cells);
                 return _writeableBitmap;
             }
 
             ClearImage();
 
+            Cells = cells;
             if (ShowGridLines) DrawGridLines();
             DrawCells();
 
-            NeedRedraw = false;
+            NeedRedraw = true;
             return _writeableBitmap;
         }
 
@@ -118,6 +125,17 @@ namespace GameOfLifeWPF
                     xOffset += CellSize + gridOffset;
                 }
                 yOffset += CellSize + gridOffset;
+            }
+        }
+
+        private void UpdateCells(bool[,] cells)
+        {
+            for (int y = 0; y < VerticalCells; y++)
+            {
+                for (int x = 0; x < HorizontalCells; x++)
+                {
+
+                }
             }
         }
 

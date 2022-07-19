@@ -56,7 +56,7 @@
                     Click="Button_Click"
                     Content="Start"
                     Style="{StaticResource BigBoyButton}" />
-                <Button Content="Stop" Style="{StaticResource BigBoyButton}" />
+                <Button Content="Stop" Style="{StaticResource BigBoyButton}" Click="Button_Click_1" />
             </StackPanel>
         </Grid>
 

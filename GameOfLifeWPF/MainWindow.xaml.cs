@@ -26,23 +26,31 @@ namespace GameOfLifeWPF
             InitializeComponent();
         }
 
-        public GameDrawer? GameDrawer { get; set; }
+        public GameDrawer GameDrawer { get; set; }
+        public GameController GameController { get; set; }
 
         private void Render(object? sender, EventArgs e)
         {
-            gameImage.Source = GameDrawer?.Draw();
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            
-
+            gameImage.Source = GameDrawer?.Draw(GameController.Field);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             GameDrawer = new GameDrawer((int)borderCanvas.ActualWidth, (int)borderCanvas.ActualHeight);
+            GameController = new GameController(GameDrawer.HorizontalCells, GameDrawer.VerticalCells);
+
             CompositionTarget.Rendering += Render;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            GameController.RandomiseField();
+            GameController.Start();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            GameController.Stop();
         }
     }
 }
