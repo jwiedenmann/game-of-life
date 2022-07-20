@@ -8,57 +8,8 @@
     Title="MainWindow"
     Width="800"
     Height="450"
-    Loaded="Window_Loaded"
     WindowState="Maximized"
     mc:Ignorable="d">
 
-    <Window.Resources>
-        <Style x:Key="BigBoyButton" TargetType="Button">
-            <Setter Property="FontSize" Value="40" />
-            <Setter Property="Padding" Value="10,5" />
-            <Setter Property="Margin" Value="3" />
-        </Style>
-    </Window.Resources>
-
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-
-        <Border
-            x:Name="borderCanvas"
-            Grid.Column="0"
-            Margin="0"
-            Background="LightGray"
-            BorderBrush="Gray"
-            RenderOptions.BitmapScalingMode="NearestNeighbor"
-            RenderOptions.EdgeMode="Aliased"
-            BorderThickness="3">
-            <Image
-                x:Name="gameImage"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                RenderOptions.BitmapScalingMode="NearestNeighbor"
-                RenderOptions.EdgeMode="Aliased"
-                Stretch="None" />
-        </Border>
-
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
-            <StackPanel />
-            <StackPanel Grid.Row="1" Orientation="Horizontal">
-                <Button
-                    Click="Button_Click"
-                    Content="Start"
-                    Style="{StaticResource BigBoyButton}" />
-                <Button Content="Stop" Style="{StaticResource BigBoyButton}" Click="Button_Click_1" />
-            </StackPanel>
-        </Grid>
-
-    </Grid>
+    <local:GameOfLifeView/>
 </Window>
