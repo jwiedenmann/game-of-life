@@ -15,13 +15,15 @@ namespace GameOfLifeWPF
         private int _gridThickness;
         private bool _showGridLines;
         private int _iterationDelay;
-        private uint _randomizationDensity;
 
         public GameOfLifeViewModel()
         {
-            LoadedCommand = new RelayCommand(OnLoaded);
+            LoadedCommand = new RelayCommand(InitGameOfLife);
             RandomizeCommand = new RelayCommand(() => GameController?.RandomizeField(RandomizationDensity));
             ToggleRunningCommand = new RelayCommand(OnToggleRunning);
+
+            GameController = new GameController();
+            GameDrawer = new GameDrawer();
 
             Rows = 20;
             Columns = 20;
@@ -30,9 +32,6 @@ namespace GameOfLifeWPF
             ShowGridLines = true;
             IterationDelay = 100;
             RandomizationDensity = 10;
-
-            GameController = new GameController();
-            GameDrawer = new GameDrawer();
         }
 
         public ICommand LoadedCommand { get; set; }
@@ -41,6 +40,7 @@ namespace GameOfLifeWPF
 
         public GameController GameController { get; set; }
         public GameDrawer GameDrawer { get; set; }
+        public uint RandomizationDensity { get; set; }
 
         public bool IsRunning
         {
@@ -51,31 +51,51 @@ namespace GameOfLifeWPF
         public int Rows
         {
             get => _rows;
-            set => SetProperty(ref _rows, value);
+            set
+            {
+                SetProperty(ref _rows, value);
+                InitGameOfLife();
+            }
         }
 
         public int Columns
         {
             get => _columns;
-            set => SetProperty(ref _columns, value);
+            set
+            {
+                SetProperty(ref _columns, value);
+                InitGameOfLife();
+            }
         }
 
         public int CellSize
         {
             get => _cellSize;
-            set => SetProperty(ref _cellSize, value);
+            set
+            {
+                SetProperty(ref _cellSize, value);
+                GameDrawer.CellSize = CellSize;
+            }
         }
 
         public int GridThickness
         {
             get => _gridThickness;
-            set => SetProperty(ref _gridThickness, value);
+            set
+            {
+                SetProperty(ref _gridThickness, value);
+                GameDrawer.GridThickness = GridThickness;
+            }
         }
 
         public bool ShowGridLines
         {
             get => _showGridLines;
-            set => SetProperty(ref _showGridLines, value);
+            set
+            {
+                SetProperty(ref _showGridLines, value);
+                GameDrawer.ShowGridLines = ShowGridLines;
+            }
         }
 
         public int IterationDelay
@@ -84,21 +104,11 @@ namespace GameOfLifeWPF
             set
             {
                 SetProperty(ref _iterationDelay, value);
-
-                if (GameController != null)
-                {
-                    GameController.IterationDelay = IterationDelay;
-                }
+                GameController.IterationDelay = IterationDelay;
             }
         }
 
-        public uint RandomizationDensity
-        {
-            get => _randomizationDensity;
-            set => SetProperty(ref _randomizationDensity, value);
-        }
-
-        private void OnLoaded()
+        private void InitGameOfLife()
         {
             GameController.Init(Rows, Columns);
             GameDrawer.Init(Rows, Columns);

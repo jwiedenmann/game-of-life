@@ -48,7 +48,7 @@ namespace GameOfLifeWPF
             set
             {
                 _gridThickness = value;
-                NeedRedraw |= true;
+                NeedRedraw = true;
             }
         }
 
