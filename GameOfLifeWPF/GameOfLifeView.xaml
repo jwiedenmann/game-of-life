@@ -176,7 +176,7 @@
                     <TextBox
                         Grid.Column="1"
                         Style="{StaticResource ConfigurationTextBox}"
-                        Text="{Binding IterationDelay}" />
+                        Text="{Binding IterationDelay, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
 
                 <Grid>
@@ -192,7 +192,7 @@
                     <TextBox
                         Grid.Column="1"
                         Style="{StaticResource ConfigurationTextBox}"
-                        Text="{Binding RandomizationDensity}" />
+                        Text="{Binding RandomizationDensity, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
             </StackPanel>
 

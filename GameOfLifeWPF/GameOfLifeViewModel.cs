@@ -81,7 +81,15 @@ namespace GameOfLifeWPF
         public int IterationDelay
         {
             get => _iterationDelay;
-            set => SetProperty(ref _iterationDelay, value);
+            set
+            {
+                SetProperty(ref _iterationDelay, value);
+
+                if (GameController != null)
+                {
+                    GameController.IterationDelay = IterationDelay;
+                }
+            }
         }
 
         public uint RandomizationDensity

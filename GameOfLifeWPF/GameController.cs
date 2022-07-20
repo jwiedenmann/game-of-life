@@ -7,10 +7,12 @@ namespace GameOfLifeWPF
     public class GameController
     {
         private readonly Timer _timer;
+        private int _iterationDelay = 100;
 
         public GameController()
         {
-            Field = new bool[0,0];
+            Field = new bool[0, 0];
+            IterationDelay = 100;
 
             _timer = new Timer(IterationDelay);
             _timer.Elapsed += (_, _) => GameStep();
@@ -22,7 +24,19 @@ namespace GameOfLifeWPF
         public int Rows { get; private set; }
         public int Columns { get; private set; }
 
-        public int IterationDelay { get; set; } = 100;
+        public int IterationDelay
+        {
+            get => _iterationDelay;
+            set
+            {
+                _iterationDelay = value;
+
+                if (_timer != null)
+                {
+                    _timer.Interval = IterationDelay;
+                }
+            }
+        }
 
         public void Init(int rows, int columns)
         {
