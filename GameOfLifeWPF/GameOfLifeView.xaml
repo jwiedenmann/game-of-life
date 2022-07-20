@@ -1,0 +1,176 @@
+﻿<UserControl
+    x:Class="GameOfLifeWPF.GameOfLifeView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:GameOfLifeWPF"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DataContext="{d:DesignInstance Type=local:GameOfLifeViewModel}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    Loaded="UserControl_Loaded"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style x:Key="BigButton" TargetType="Button">
+            <Setter Property="FontSize" Value="40" />
+            <Setter Property="Padding" Value="20,10" />
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+        </Style>
+
+        <Style
+            x:Key="StartStopButton"
+            BasedOn="{StaticResource BigButton}"
+            TargetType="Button">
+            <Setter Property="Foreground" Value="White" />
+
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                    <Setter Property="Background" Value="LimeGreen" />
+                    <Setter Property="Content" Value="Running" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsRunning}" Value="False">
+                    <Setter Property="Background" Value="OrangeRed" />
+                    <Setter Property="Content" Value="Stopped" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ConfigurationTextBlock" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Margin" Value="3" />
+
+        </Style>
+
+        <Style x:Key="ConfigurationTextBox" TargetType="TextBox">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="MinWidth" Value="50" />
+        </Style>
+
+        <Style x:Key="ConfigurationCheckBox" TargetType="CheckBox">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+
+    </UserControl.Resources>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Border
+            x:Name="borderCanvas"
+            Grid.Column="0"
+            Margin="0"
+            Background="LightGray"
+            BorderBrush="Gray"
+            BorderThickness="3"
+            RenderOptions.BitmapScalingMode="NearestNeighbor"
+            RenderOptions.EdgeMode="Aliased">
+            <Image
+                x:Name="gameImage"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                RenderOptions.BitmapScalingMode="NearestNeighbor"
+                RenderOptions.EdgeMode="Aliased"
+                Stretch="None" />
+        </Border>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        Grid.Column="0"
+                        Style="{StaticResource ConfigurationTextBlock}"
+                        Text="Rows:" />
+                    <TextBox
+                        Grid.Column="1"
+                        Style="{StaticResource ConfigurationTextBox}"
+                        Text="{Binding Rows, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        Grid.Column="0"
+                        Style="{StaticResource ConfigurationTextBlock}"
+                        Text="Columns:" />
+                    <TextBox
+                        Grid.Column="1"
+                        Style="{StaticResource ConfigurationTextBox}"
+                        Text="{Binding Columns, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+
+                <Grid Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        Grid.Column="0"
+                        Style="{StaticResource ConfigurationTextBlock}"
+                        Text="Cell size (px):" />
+                    <TextBox
+                        Grid.Column="1"
+                        Style="{StaticResource ConfigurationTextBox}"
+                        Text="{Binding CellSize, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        Grid.Column="0"
+                        Style="{StaticResource ConfigurationTextBlock}"
+                        Text="Grid thickness (px):" />
+                    <TextBox
+                        Grid.Column="1"
+                        Style="{StaticResource ConfigurationTextBox}"
+                        Text="{Binding GridThickness, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+
+                <Grid Margin="0,10,0,0">
+                    <CheckBox IsChecked="{Binding ShowGridLines, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ConfigurationCheckBox}">
+                        <TextBlock VerticalAlignment="Center" Text="Show grid lines" />
+                    </CheckBox>
+                </Grid>
+            </StackPanel>
+
+            <Button
+                Grid.Row="1"
+                Command="{Binding ToggleRunningCommand}"
+                Style="{StaticResource StartStopButton}" />
+        </Grid>
+
+    </Grid>
+</UserControl>
