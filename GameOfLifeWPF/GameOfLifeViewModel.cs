@@ -14,10 +14,13 @@ namespace GameOfLifeWPF
         private int _cellSize;
         private int _gridThickness;
         private bool _showGridLines;
+        private int _iterationDelay;
+        private uint _randomizationDensity;
 
         public GameOfLifeViewModel()
         {
             LoadedCommand = new RelayCommand(OnLoaded);
+            RandomizeCommand = new RelayCommand(() => GameController?.RandomizeField(RandomizationDensity));
             ToggleRunningCommand = new RelayCommand(OnToggleRunning);
 
             Rows = 20;
@@ -25,12 +28,15 @@ namespace GameOfLifeWPF
             CellSize = 20;
             GridThickness = 20;
             ShowGridLines = true;
+            IterationDelay = 100;
+            RandomizationDensity = 10;
 
             GameController = new GameController();
             GameDrawer = new GameDrawer();
         }
 
         public ICommand LoadedCommand { get; set; }
+        public ICommand RandomizeCommand { get; set; }
         public ICommand ToggleRunningCommand { get; set; }
 
         public GameController GameController { get; set; }
@@ -70,6 +76,18 @@ namespace GameOfLifeWPF
         {
             get => _showGridLines;
             set => SetProperty(ref _showGridLines, value);
+        }
+
+        public int IterationDelay
+        {
+            get => _iterationDelay;
+            set => SetProperty(ref _iterationDelay, value);
+        }
+
+        public uint RandomizationDensity
+        {
+            get => _randomizationDensity;
+            set => SetProperty(ref _randomizationDensity, value);
         }
 
         private void OnLoaded()

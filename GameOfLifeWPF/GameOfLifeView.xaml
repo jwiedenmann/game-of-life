@@ -81,8 +81,6 @@
             RenderOptions.EdgeMode="Aliased">
             <Image
                 x:Name="gameImage"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
                 RenderOptions.BitmapScalingMode="NearestNeighbor"
                 RenderOptions.EdgeMode="Aliased"
                 Stretch="None" />
@@ -164,12 +162,48 @@
                         <TextBlock VerticalAlignment="Center" Text="Show grid lines" />
                     </CheckBox>
                 </Grid>
+
+                <Grid Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        Grid.Column="0"
+                        Style="{StaticResource ConfigurationTextBlock}"
+                        Text="Iteration Delay (ms):" />
+                    <TextBox
+                        Grid.Column="1"
+                        Style="{StaticResource ConfigurationTextBox}"
+                        Text="{Binding IterationDelay}" />
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        Grid.Column="0"
+                        Style="{StaticResource ConfigurationTextBlock}"
+                        Text="Randomization density:" />
+                    <TextBox
+                        Grid.Column="1"
+                        Style="{StaticResource ConfigurationTextBox}"
+                        Text="{Binding RandomizationDensity}" />
+                </Grid>
             </StackPanel>
 
-            <Button
-                Grid.Row="1"
-                Command="{Binding ToggleRunningCommand}"
-                Style="{StaticResource StartStopButton}" />
+            <StackPanel Grid.Row="1">
+                <Button
+                    Command="{Binding RandomizeCommand}"
+                    Content="Randomize"
+                    Style="{StaticResource BigButton}" />
+                <Button Command="{Binding ToggleRunningCommand}" Style="{StaticResource StartStopButton}" />
+            </StackPanel>
+
         </Grid>
 
     </Grid>

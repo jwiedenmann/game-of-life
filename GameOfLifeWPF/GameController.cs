@@ -90,7 +90,7 @@ namespace GameOfLifeWPF
             return neighbours.Count(x => x);
         }
 
-        public void RandomiseField()
+        public void RandomizeField(uint density)
         {
             var random = new Random();
 
@@ -98,7 +98,7 @@ namespace GameOfLifeWPF
             {
                 for (int x = 0; x < Field.GetLength(1); x++)
                 {
-                    Field[y, x] = random.Next(0, 100) >= 90;
+                    Field[y, x] = random.Next(0, 100) >= (100 - density);
                 }
             }
         }
