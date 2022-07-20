@@ -26,7 +26,8 @@ namespace GameOfLifeWPF
             GridThickness = 20;
             ShowGridLines = true;
 
-
+            GameController = new GameController();
+            GameDrawer = new GameDrawer();
         }
 
         public ICommand LoadedCommand { get; set; }
@@ -73,16 +74,27 @@ namespace GameOfLifeWPF
 
         private void OnLoaded()
         {
+            GameController.Init(Rows, Columns);
+            GameDrawer.Init(Rows, Columns);
         }
 
         private void OnToggleRunning()
         {
             IsRunning = !IsRunning;
+
+            if (IsRunning)
+            {
+                GameController.Start();
+            }
+            else
+            {
+                GameController.Stop();
+            }
         }
 
-        public ImageSource RenderImage()
+        public ImageSource? RenderImage()
         {
-            throw new Exception();
+            return GameDrawer.Draw(GameController.Field);
         }
     }
 }

@@ -6,40 +6,60 @@ namespace GameOfLifeWPF
 {
     public class GameController
     {
-        private Timer _timer;
+        private readonly Timer _timer;
 
-        public GameController(int width, int height)
+        public GameController()
         {
-            Field = new bool[height, width];
-            Width = width;
-            Height = height;
+            Field = new bool[0,0];
 
             _timer = new Timer(IterationDelay);
-            _timer.Elapsed += GameStep;
+            _timer.Elapsed += (_, _) => GameStep();
         }
 
-        public int Iteration { get; set; }
+        public bool IsInitialized { get; private set; } = false;
+        public int Iteration { get; private set; }
+        public bool[,] Field { get; private set; }
+        public int Rows { get; private set; }
+        public int Columns { get; private set; }
+
         public int IterationDelay { get; set; } = 100;
-        public bool[,] Field { get; set; }
-        public int Width { get; }
-        public int Height { get; }
+
+        public void Init(int rows, int columns)
+        {
+            Rows = rows;
+            Columns = columns;
+            Field = new bool[Rows, Columns];
+
+            IsInitialized = true;
+        }
 
         public void Start()
         {
-            _timer.Start();
+            if (IsInitialized)
+            {
+                _timer.Start();
+            }
         }
 
         public void Stop()
         {
-            _timer.Stop();
+            if (IsInitialized)
+            {
+                _timer.Stop();
+            }
         }
 
-        public void GameStep(object? sender, ElapsedEventArgs e)
+        public void GameStep()
         {
-            var tempField = (bool[,])Field.Clone();
-            for (int y = 0; y < Height; y++)
+            if (!IsInitialized)
             {
-                for (int x = 0; x < Width; x++)
+                return;
+            }
+
+            var tempField = (bool[,])Field.Clone();
+            for (int y = 0; y < Rows; y++)
+            {
+                for (int x = 0; x < Columns; x++)
                 {
                     var neighbours = CalculateNeighbours(x, y);
                     var alive = Field[y, x];
@@ -53,8 +73,8 @@ namespace GameOfLifeWPF
 
         private int CalculateNeighbours(int x, int y)
         {
-            int heightIndex = Height - 1;
-            int widthIndex = Width - 1;
+            int heightIndex = Rows - 1;
+            int widthIndex = Columns - 1;
             var top = y > 0 ? y - 1 : heightIndex;
             var bottom = y < heightIndex ? y + 1 : 0;
             var left = x > 0 ? x - 1 : widthIndex;

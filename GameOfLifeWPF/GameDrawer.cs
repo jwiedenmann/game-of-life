@@ -7,31 +7,30 @@ namespace GameOfLifeWPF
 {
     public class GameDrawer
     {
-        private readonly WriteableBitmap _writeableBitmap;
         private readonly int _colorChannelBytes;
         private int _cellSize;
         private int _gridThickness;
         private bool _showGridLines;
 
-        public GameDrawer(int width, int height)
+        public GameDrawer()
         {
-            _writeableBitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
             _colorChannelBytes = 4;
 
-            CellSize = 10;
+            CellSize = 30;
             GridThickness = 3;
             ShowGridLines = true;
 
-            HorizontalCells = _writeableBitmap.PixelWidth / (CellSize + GridThickness);
-            VerticalCells = _writeableBitmap.PixelHeight / (CellSize + GridThickness);
-
-            Cells = new bool[VerticalCells, HorizontalCells];
+            Cells = new bool[0, 0];
         }
 
+        public bool IsInitialized { get; private set; } = false;
         public bool NeedRedraw { get; private set; } = true;
         public bool[,] Cells { get; private set; }
-        public int HorizontalCells { get; set; }
-        public int VerticalCells { get; set; }
+        public int Rows { get; private set; }
+        public int Columns { get; private set; }
+        public int CurrentPixelWidth { get; private set; }
+        public int CurrentPixelHeight { get; private set; }
+        public WriteableBitmap? WriteableBitmap { get; private set; }
 
         public int CellSize
         {
@@ -63,17 +62,31 @@ namespace GameOfLifeWPF
             }
         }
 
-        public WriteableBitmap Draw(bool[,] cells)
+
+        public void Init(int rows, int columns)
         {
-            if (cells.Length != Cells.Length)
+            Rows = rows;
+            Columns = columns;
+            Cells = new bool[Rows, Columns];
+
+            CurrentPixelWidth = CalculatePixelWidth();
+            CurrentPixelHeight = CalculatePixelHeight();
+            WriteableBitmap = new WriteableBitmap(CurrentPixelWidth, CurrentPixelHeight, 96, 96, PixelFormats.Bgra32, null);
+
+            IsInitialized = true;
+        }
+
+        public WriteableBitmap? Draw(bool[,] cells)
+        {
+            if (!IsInitialized || cells.Length != Cells.Length)
             {
-                return _writeableBitmap;
+                return WriteableBitmap;
             }
 
             if (!NeedRedraw)
             {
                 UpdateCells(cells);
-                return _writeableBitmap;
+                return WriteableBitmap;
             }
 
             ClearImage();
@@ -83,16 +96,19 @@ namespace GameOfLifeWPF
             DrawCells();
 
             NeedRedraw = true;
-            return _writeableBitmap;
+            return WriteableBitmap;
         }
+
+        public int CalculatePixelWidth() => GridThickness + (CellSize + GridThickness) * Columns;
+        public int CalculatePixelHeight() => GridThickness + (CellSize + GridThickness) * Rows;
 
         private void ClearImage()
         {
-            Int32Rect sourceRect = new(0, 0, _writeableBitmap.PixelWidth, _writeableBitmap.PixelHeight);
-            byte[] pixels = new byte[_writeableBitmap.PixelHeight * _writeableBitmap.PixelWidth * _colorChannelBytes];
+            Int32Rect sourceRect = new(0, 0, WriteableBitmap.PixelWidth, WriteableBitmap.PixelHeight);
+            byte[] pixels = new byte[WriteableBitmap.PixelHeight * WriteableBitmap.PixelWidth * _colorChannelBytes];
 
             Array.Clear(pixels, 0, pixels.Length);
-            _writeableBitmap.WritePixels(sourceRect, pixels, _writeableBitmap.PixelWidth * _colorChannelBytes, 0);
+            WriteableBitmap.WritePixels(sourceRect, pixels, WriteableBitmap.PixelWidth * _colorChannelBytes, 0);
         }
 
         private void DrawCells()
@@ -111,16 +127,16 @@ namespace GameOfLifeWPF
             int gridOffset = ShowGridLines ? GridThickness : 0;
             int yOffset = gridOffset;
 
-            for (int y = 0; y < VerticalCells; y++)
+            for (int y = 0; y < Rows; y++)
             {
                 int xOffset = gridOffset;
 
-                for (int x = 0; x < HorizontalCells; x++)
+                for (int x = 0; x < Columns; x++)
                 {
                     cellRect.Y = yOffset;
                     cellRect.X = xOffset;
                     byte[] cell = Cells[y, x] ? whiteCellPixels : blackCellPixels;
-                    _writeableBitmap.WritePixels(cellRect, cell, cellStride, 0);
+                    WriteableBitmap.WritePixels(cellRect, cell, cellStride, 0);
 
                     xOffset += CellSize + gridOffset;
                 }
@@ -130,9 +146,9 @@ namespace GameOfLifeWPF
 
         private void UpdateCells(bool[,] cells)
         {
-            for (int y = 0; y < VerticalCells; y++)
+            for (int y = 0; y < Rows; y++)
             {
-                for (int x = 0; x < HorizontalCells; x++)
+                for (int x = 0; x < Columns; x++)
                 {
 
                 }
@@ -141,33 +157,33 @@ namespace GameOfLifeWPF
 
         private void DrawGridLines()
         {
-            Int32Rect horizontalLine = new(0, 0, _writeableBitmap.PixelWidth, GridThickness);
-            Int32Rect verticalLine = new(0, 0, GridThickness, _writeableBitmap.PixelHeight);
-            byte[] horizontalPixels = new byte[_writeableBitmap.PixelWidth * GridThickness * _colorChannelBytes];
-            byte[] verticalPixels = new byte[_writeableBitmap.PixelHeight * GridThickness * _colorChannelBytes];
-            int horizontalStride = _writeableBitmap.PixelWidth * 4;
+            Int32Rect horizontalLine = new(0, 0, WriteableBitmap.PixelWidth, GridThickness);
+            Int32Rect verticalLine = new(0, 0, GridThickness, WriteableBitmap.PixelHeight);
+            byte[] horizontalPixels = new byte[WriteableBitmap.PixelWidth * GridThickness * _colorChannelBytes];
+            byte[] verticalPixels = new byte[WriteableBitmap.PixelHeight * GridThickness * _colorChannelBytes];
+            int horizontalStride = WriteableBitmap.PixelWidth * 4;
             int verticalStride = GridThickness * 4;
 
-            for (int i = 0; i < _writeableBitmap.PixelWidth * GridThickness; i++)
+            for (int i = 0; i < WriteableBitmap.PixelWidth * GridThickness; i++)
             {
                 DrawGreyPixel(i, horizontalPixels);
             }
 
-            for (int i = 0; i < _writeableBitmap.PixelHeight * GridThickness; i++)
+            for (int i = 0; i < WriteableBitmap.PixelHeight * GridThickness; i++)
             {
                 DrawGreyPixel(i, verticalPixels);
             }
 
-            for (int i = 0; i < HorizontalCells; i++)
+            for (int i = 0; i < Columns; i++)
             {
                 verticalLine.X = i * (CellSize + GridThickness);
-                _writeableBitmap.WritePixels(verticalLine, verticalPixels, verticalStride, 0);
+                WriteableBitmap.WritePixels(verticalLine, verticalPixels, verticalStride, 0);
             }
 
-            for (int i = 0; i < VerticalCells; i++)
+            for (int i = 0; i < Rows; i++)
             {
                 horizontalLine.Y = i * (CellSize + GridThickness);
-                _writeableBitmap.WritePixels(horizontalLine, horizontalPixels, horizontalStride, 0);
+                WriteableBitmap.WritePixels(horizontalLine, horizontalPixels, horizontalStride, 0);
             }
         }
 
