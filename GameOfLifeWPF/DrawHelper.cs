@@ -105,7 +105,7 @@ namespace GameOfLifeWPF
             if (_verticalGridLineRect is null)
             {
                 int totalHeight = GridThickness + (CellSize + GridThickness) * Rows;
-                _verticalGridLineRect = new(0, 0, totalHeight, GridThickness);
+                _verticalGridLineRect = new(0, 0, GridThickness, totalHeight);
             }
 
             return (Int32Rect)_verticalGridLineRect;
