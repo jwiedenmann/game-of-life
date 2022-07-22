@@ -71,16 +71,11 @@ namespace GameOfLifeWPF
             }
         }
 
-
         public void Init(int rows, int columns)
         {
             Rows = rows;
             Columns = columns;
             Cells = new bool[Rows, Columns];
-
-            CurrentPixelWidth = CalculatePixelWidth();
-            CurrentPixelHeight = CalculatePixelHeight();
-            WriteableBitmap = new WriteableBitmap(CurrentPixelWidth, CurrentPixelHeight, 96, 96, PixelFormats.Bgra32, null);
 
             DrawHelper = new DrawHelper()
             {
@@ -91,6 +86,11 @@ namespace GameOfLifeWPF
                 Columns = Columns
             };
 
+            CurrentPixelWidth = DrawHelper.CalculatePixelWidth();
+            CurrentPixelHeight = DrawHelper.CalculatePixelHeight();
+            WriteableBitmap = new WriteableBitmap(CurrentPixelWidth, CurrentPixelHeight, 96, 96, PixelFormats.Bgra32, null);
+
+            NeedRedraw = true;
             IsInitialized = true;
         }
 
@@ -101,24 +101,22 @@ namespace GameOfLifeWPF
                 return WriteableBitmap;
             }
 
-            if (!NeedRedraw)
+            if (NeedRedraw)
             {
-                UpdateCells(cells);
-                return WriteableBitmap;
+                ClearImage();
+
+                if (ShowGridLines)
+                {
+                    DrawGridLines();
+                }
             }
 
-            ClearImage();
-
+            DrawCells(cells, NeedRedraw);
             Cells = cells;
-            if (ShowGridLines) DrawGridLines();
-            DrawCells();
 
-            NeedRedraw = true;
+            NeedRedraw = false;
             return WriteableBitmap;
         }
-
-        public int CalculatePixelWidth() => GridThickness + (CellSize + GridThickness) * Columns;
-        public int CalculatePixelHeight() => GridThickness + (CellSize + GridThickness) * Rows;
 
         private void ClearImage()
         {
@@ -134,18 +132,14 @@ namespace GameOfLifeWPF
             WriteableBitmap.WritePixels(sourceRect, pixels, WriteableBitmap.PixelWidth * _colorChannelBytes, 0);
         }
 
-        private void DrawCells(WriteableBitmap writeableBitmap)
+        private void DrawCells(bool[,] cells, bool redraw)
         {
-            Int32Rect cellRect = new(0, 0, CellSize, CellSize);
-            int cellStride = CellSize * _colorChannelBytes;
-            byte[] whiteCellPixels = new byte[CellSize * CellSize * _colorChannelBytes];
-            byte[] blackCellPixels = new byte[CellSize * CellSize * _colorChannelBytes];
-
-            for (int i = 0; i < CellSize * CellSize; i++)
+            if (WriteableBitmap is null || cells.Length != Cells.Length)
             {
-                DrawWhitePixel(i, whiteCellPixels);
-                DrawBlackPixel(i, blackCellPixels);
+                return;
             }
+
+            Int32Rect cellRect = DrawHelper.GetCellRect();
 
             int gridOffset = ShowGridLines ? GridThickness : 0;
             int yOffset = gridOffset;
@@ -156,25 +150,25 @@ namespace GameOfLifeWPF
 
                 for (int x = 0; x < Columns; x++)
                 {
+                    if (!redraw && cells[y, x] == Cells[y, x])
+                    {
+                        return;
+                    }
+
                     cellRect.Y = yOffset;
                     cellRect.X = xOffset;
-                    byte[] cell = Cells[y, x] ? whiteCellPixels : blackCellPixels;
-                    WriteableBitmap.WritePixels(cellRect, cell, cellStride, 0);
+                    byte[] cell = Cells[y, x]
+                        ? DrawHelper.GetWhiteCellPixels()
+                        : DrawHelper.GetBlackCellPixels();
+                    WriteableBitmap.WritePixels(
+                        cellRect,
+                        cell,
+                        DrawHelper.GetCellStride(),
+                        0);
 
                     xOffset += CellSize + gridOffset;
                 }
                 yOffset += CellSize + gridOffset;
-            }
-        }
-
-        private void UpdateCells(bool[,] cells)
-        {
-            for (int y = 0; y < Rows; y++)
-            {
-                for (int x = 0; x < Columns; x++)
-                {
-
-                }
             }
         }
 
