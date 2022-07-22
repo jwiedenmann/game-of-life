@@ -185,16 +185,16 @@ namespace GameOfLifeWPF
                 return;
             }
 
-            Int32Rect horizontalLine = DrawHelper.HorizontalGridLineRect;
-            Int32Rect verticalLine = DrawHelper.VerticalGridLineRect;
+            Int32Rect horizontalLine = DrawHelper.GetHorizontalGridLineRect();
+            Int32Rect verticalLine = DrawHelper.GetVerticalGridLineRect();
 
             for (int i = 0; i < Columns; i++)
             {
                 verticalLine.X = i * (CellSize + GridThickness);
                 WriteableBitmap.WritePixels(
                     verticalLine,
-                    DrawHelper.VerticalGridLinePixels,
-                    DrawHelper.VerticalLineStride,
+                    DrawHelper.GetVerticalGridLinePixels(),
+                    DrawHelper.GetVerticalLineStride(),
                     0);
             }
 
@@ -203,8 +203,8 @@ namespace GameOfLifeWPF
                 horizontalLine.Y = i * (CellSize + GridThickness);
                 WriteableBitmap.WritePixels(
                     horizontalLine,
-                    DrawHelper.HorizontalGridLinePixels,
-                    DrawHelper.HorizontalLineStride,
+                    DrawHelper.GetHorizontalGridLinePixels(),
+                    DrawHelper.GetHorizontalLineStride(),
                     0);
             }
         }

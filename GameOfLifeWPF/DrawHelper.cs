@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace GameOfLifeWPF
 {
@@ -17,104 +18,78 @@ namespace GameOfLifeWPF
         public int Rows { get; init; }
         public int Columns { get; init; }
 
-        public byte[] HorizontalGridLinePixels
+        public byte[] GetHorizontalGridLinePixels()
         {
-            get
+            if (_horizontalGridLinePixels is null)
             {
-                if (_horizontalGridLinePixels is null)
+                int totalWidth = GridThickness + (CellSize + GridThickness) * Columns;
+                _horizontalGridLinePixels = new byte[totalWidth * GridThickness * ColorChannelBytes];
+
+                for (int i = 0; i < totalWidth; i++)
                 {
-                    int totalWidth = GridThickness + (CellSize + GridThickness) * Columns;
-                    _horizontalGridLinePixels = new byte[totalWidth * GridThickness * ColorChannelBytes];
-
-                    for (int i = 0; i < totalWidth; i++)
-                    {
-                        DrawGreyPixel(i, _horizontalGridLinePixels);
-                    }
+                    DrawGreyPixel(i, _horizontalGridLinePixels);
                 }
-
-                return _horizontalGridLinePixels;
             }
-            set => _horizontalGridLinePixels = value;
+
+            return _horizontalGridLinePixels;
         }
 
-        public byte[] VerticalGridLinePixels
+        public byte[] GetVerticalGridLinePixels()
         {
-            get
+            if (_verticalGridLinePixels is null)
             {
-                if (_verticalGridLinePixels is null)
+                int totalHeight = GridThickness + (CellSize + GridThickness) * Rows;
+                _verticalGridLinePixels = new byte[totalHeight * GridThickness * ColorChannelBytes];
+
+                for (int i = 0; i < totalHeight; i++)
                 {
-                    int totalHeight = GridThickness + (CellSize + GridThickness) * Rows;
-                    _verticalGridLinePixels = new byte[totalHeight * GridThickness * ColorChannelBytes];
-
-                    for (int i = 0; i < totalHeight; i++)
-                    {
-                        DrawGreyPixel(i, _verticalGridLinePixels);
-                    }
+                    DrawGreyPixel(i, _verticalGridLinePixels);
                 }
-
-                return _verticalGridLinePixels;
             }
-            set => _verticalGridLinePixels = value;
+
+            return _verticalGridLinePixels;
         }
 
-        public Int32Rect HorizontalGridLineRect
+        public Int32Rect GetHorizontalGridLineRect()
         {
-            get
+            if (_horizontalGridLineRect is null)
             {
-                if (_horizontalGridLineRect is null)
-                {
-                    int totalWidth = GridThickness + (CellSize + GridThickness) * Columns;
-                    _horizontalGridLineRect = new(0, 0, totalWidth, GridThickness);
-                }
-
-                return (Int32Rect)_horizontalGridLineRect;
+                int totalWidth = GridThickness + (CellSize + GridThickness) * Columns;
+                _horizontalGridLineRect = new(0, 0, totalWidth, GridThickness);
             }
-            set => _horizontalGridLineRect = value;
+
+            return (Int32Rect)_horizontalGridLineRect;
         }
 
-        public Int32Rect VerticalGridLineRect
+        public Int32Rect GetVerticalGridLineRect()
         {
-            get
+            if (_verticalGridLineRect is null)
             {
-                if (_verticalGridLineRect is null)
-                {
-                    int totalHeight = GridThickness + (CellSize + GridThickness) * Rows;
-                    _verticalGridLineRect = new(0, 0, totalHeight, GridThickness);
-                }
-
-                return (Int32Rect)_verticalGridLineRect;
+                int totalHeight = GridThickness + (CellSize + GridThickness) * Rows;
+                _verticalGridLineRect = new(0, 0, totalHeight, GridThickness);
             }
-            set => _verticalGridLineRect = value;
+
+            return (Int32Rect)_verticalGridLineRect;
         }
 
-
-        public int HorizontalLineStride
+        public int GetHorizontalLineStride()
         {
-            get
+            if (_horizontalLineStride is null)
             {
-                if (_horizontalLineStride is null)
-                {
-                    _horizontalLineStride = GridThickness + (CellSize + GridThickness) * Rows;
-                }
-
-                return (int)_horizontalLineStride;
+                _horizontalLineStride = GridThickness + (CellSize + GridThickness) * Rows;
             }
-            set => _horizontalLineStride = value;
+
+            return (int)_horizontalLineStride;
         }
 
-
-        public int VerticalLineStride
+        public int GetVerticalLineStride()
         {
-            get
+            if (_verticalLineStride is null)
             {
-                if (_verticalLineStride is null)
-                {
-                    _verticalLineStride = GridThickness;
-                }
-
-                return (int)_verticalLineStride;
+                _verticalLineStride = GridThickness;
             }
-            set => _verticalLineStride = value;
+
+            return (int)_verticalLineStride;
         }
 
         private void DrawBlackPixel(int pixel, byte[] pixels)
