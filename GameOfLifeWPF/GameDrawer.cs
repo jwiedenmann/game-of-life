@@ -111,7 +111,7 @@ namespace GameOfLifeWPF
                 }
             }
 
-            DrawCells(cells, NeedRedraw);
+            DrawCells(cells);
             Cells = cells;
 
             NeedRedraw = false;
@@ -132,7 +132,7 @@ namespace GameOfLifeWPF
             WriteableBitmap.WritePixels(sourceRect, pixels, WriteableBitmap.PixelWidth * _colorChannelBytes, 0);
         }
 
-        private void DrawCells(bool[,] cells, bool redraw)
+        private void DrawCells(bool[,] cells)
         {
             if (WriteableBitmap is null || cells.Length != Cells.Length)
             {
@@ -150,11 +150,6 @@ namespace GameOfLifeWPF
 
                 for (int x = 0; x < Columns; x++)
                 {
-                    if (!redraw && cells[y, x] == Cells[y, x])
-                    {
-                        return;
-                    }
-
                     cellRect.Y = yOffset;
                     cellRect.X = xOffset;
                     byte[] cell = Cells[y, x]
