@@ -53,6 +53,11 @@ namespace GameOfLifeWPF
             get => _rows;
             set
             {
+                if (value < 1)
+                {
+                    return;
+                }
+
                 SetProperty(ref _rows, value);
                 InitGameOfLife();
             }
@@ -63,6 +68,11 @@ namespace GameOfLifeWPF
             get => _columns;
             set
             {
+                if (value < 1)
+                {
+                    return;
+                }
+
                 SetProperty(ref _columns, value);
                 InitGameOfLife();
             }
@@ -73,6 +83,11 @@ namespace GameOfLifeWPF
             get => _cellSize;
             set
             {
+                if (value < 1)
+                {
+                    return;
+                }
+
                 SetProperty(ref _cellSize, value);
                 GameDrawer.CellSize = CellSize;
             }
@@ -83,6 +98,11 @@ namespace GameOfLifeWPF
             get => _gridThickness;
             set
             {
+                if (value < 0)
+                {
+                    return;
+                }
+
                 SetProperty(ref _gridThickness, value);
                 GameDrawer.GridThickness = GridThickness;
             }
@@ -103,6 +123,11 @@ namespace GameOfLifeWPF
             get => _iterationDelay;
             set
             {
+                if (value < 1)
+                {
+                    return;
+                }
+
                 SetProperty(ref _iterationDelay, value);
                 GameController.IterationDelay = IterationDelay;
             }
