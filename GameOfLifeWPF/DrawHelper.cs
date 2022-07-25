@@ -32,7 +32,7 @@ namespace GameOfLifeWPF
                 int totalWidth = GridThickness + (CellSize + GridThickness) * Columns;
                 _horizontalGridLinePixels = new byte[totalWidth * GridThickness * ColorChannelBytes];
 
-                for (int i = 0; i < totalWidth; i++)
+                for (int i = 0; i < totalWidth * GridThickness; i++)
                 {
                     DrawGreyPixel(i, _horizontalGridLinePixels);
                 }
@@ -48,7 +48,7 @@ namespace GameOfLifeWPF
                 int totalHeight = GridThickness + (CellSize + GridThickness) * Rows;
                 _verticalGridLinePixels = new byte[totalHeight * GridThickness * ColorChannelBytes];
 
-                for (int i = 0; i < totalHeight; i++)
+                for (int i = 0; i < totalHeight * GridThickness; i++)
                 {
                     DrawGreyPixel(i, _verticalGridLinePixels);
                 }
@@ -125,7 +125,7 @@ namespace GameOfLifeWPF
         {
             if (_horizontalLineStride is null)
             {
-                _horizontalLineStride = GridThickness + (CellSize + GridThickness) * Rows;
+                _horizontalLineStride = (GridThickness + (CellSize + GridThickness) * Columns) * ColorChannelBytes;
             }
 
             return (int)_horizontalLineStride;
@@ -135,7 +135,7 @@ namespace GameOfLifeWPF
         {
             if (_verticalLineStride is null)
             {
-                _verticalLineStride = GridThickness;
+                _verticalLineStride = GridThickness * ColorChannelBytes;
             }
 
             return (int)_verticalLineStride;
@@ -145,7 +145,7 @@ namespace GameOfLifeWPF
         {
             if (_cellStride is null)
             {
-                _cellStride = CellSize;
+                _cellStride = CellSize * ColorChannelBytes;
             }
 
             return (int)_cellStride;

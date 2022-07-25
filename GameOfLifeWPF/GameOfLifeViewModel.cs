@@ -27,8 +27,8 @@ namespace GameOfLifeWPF
 
             Rows = 20;
             Columns = 20;
-            CellSize = 20;
-            GridThickness = 20;
+            CellSize = 40;
+            GridThickness = 3;
             ShowGridLines = true;
             IterationDelay = 100;
             RandomizationDensity = 10;

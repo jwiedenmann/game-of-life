@@ -180,9 +180,11 @@ namespace GameOfLifeWPF
             }
 
             Int32Rect horizontalLine = DrawHelper.GetHorizontalGridLineRect();
+            horizontalLine.X = 0;
             Int32Rect verticalLine = DrawHelper.GetVerticalGridLineRect();
+            verticalLine.Y = 0;
 
-            for (int i = 0; i < Columns; i++)
+            for (int i = 0; i < Columns + 1; i++)
             {
                 verticalLine.X = i * (CellSize + GridThickness);
                 WriteableBitmap.WritePixels(
@@ -192,7 +194,7 @@ namespace GameOfLifeWPF
                     0);
             }
 
-            for (int i = 0; i < Rows; i++)
+            for (int i = 0; i < Rows + 1; i++)
             {
                 horizontalLine.Y = i * (CellSize + GridThickness);
                 WriteableBitmap.WritePixels(
