@@ -103,7 +103,7 @@ namespace GameOfLifeWPF
 
             if (NeedRedraw)
             {
-                ClearImage();
+                Init(Rows, Columns);
 
                 if (ShowGridLines)
                 {
@@ -116,20 +116,6 @@ namespace GameOfLifeWPF
 
             NeedRedraw = false;
             return WriteableBitmap;
-        }
-
-        private void ClearImage()
-        {
-            if (WriteableBitmap is null)
-            {
-                return;
-            }
-
-            Int32Rect sourceRect = new(0, 0, WriteableBitmap.PixelWidth, WriteableBitmap.PixelHeight);
-            byte[] pixels = new byte[WriteableBitmap.PixelHeight * WriteableBitmap.PixelWidth * _colorChannelBytes];
-
-            Array.Clear(pixels, 0, pixels.Length);
-            WriteableBitmap.WritePixels(sourceRect, pixels, WriteableBitmap.PixelWidth * _colorChannelBytes, 0);
         }
 
         private void DrawCells(bool[,] cells)
