@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Timers;
 
@@ -21,6 +22,7 @@ namespace GameOfLifeWPF
         public bool IsInitialized { get; private set; } = false;
         public int Iteration { get; private set; }
         public bool[,] Field { get; private set; }
+        public ConcurrentQueue<ValueTuple<int, int>> Changes { get; private set; }
         public int Rows { get; private set; }
         public int Columns { get; private set; }
 

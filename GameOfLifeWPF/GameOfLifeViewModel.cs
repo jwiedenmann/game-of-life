@@ -155,7 +155,13 @@ namespace GameOfLifeWPF
 
         public ImageSource? RenderImage()
         {
-            return GameDrawer.Draw(GameController.Field);
+            if (GameDrawer.NeedRedraw)
+            {
+                return GameDrawer.Draw(GameController.Field);
+            }
+
+            GameController.Changes.
+            return GameDrawer.Draw();
         }
     }
 }

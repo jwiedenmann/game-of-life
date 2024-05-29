@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -96,31 +97,58 @@ namespace GameOfLifeWPF
 
         public WriteableBitmap? Draw(bool[,] cells)
         {
-            if (!IsInitialized || cells.Length != Cells.Length)
+            if (!IsInitialized)
             {
                 return WriteableBitmap;
             }
 
-            if (NeedRedraw)
-            {
-                Init(Rows, Columns);
+            Cells = cells;
+            Init(Rows, Columns);
 
-                if (ShowGridLines)
-                {
-                    DrawGridLines();
-                }
+            if (ShowGridLines)
+            {
+                DrawGridLines();
             }
 
-            DrawCells(cells);
-            Cells = cells;
+            DrawCells();
 
             NeedRedraw = false;
             return WriteableBitmap;
         }
 
-        private void DrawCells(bool[,] cells)
+        public WriteableBitmap? Draw(IEnumerable<ValueTuple<int, int, bool>> changes)
         {
-            if (WriteableBitmap is null || cells.Length != Cells.Length)
+            if (!IsInitialized || NeedRedraw || WriteableBitmap is null)
+            {
+                return WriteableBitmap;
+            }
+
+            Int32Rect cellRect = DrawHelper.GetCellRect();
+            int gridOffset = ShowGridLines ? GridThickness : 0;
+
+            foreach (var change in changes)
+            {
+                Cells[change.Item2, change.Item1] = change.Item3;
+
+                cellRect.X = gridOffset + change.Item1 * (CellSize + gridOffset);
+                cellRect.Y = gridOffset + change.Item2 * (CellSize + gridOffset);
+
+                byte[] cell = change.Item3
+                        ? DrawHelper.GetWhiteCellPixels()
+                        : DrawHelper.GetBlackCellPixels();
+                WriteableBitmap.WritePixels(
+                    cellRect,
+                    cell,
+                    DrawHelper.GetCellStride(),
+                    0);
+            }
+
+            return WriteableBitmap;
+        }
+
+        private void DrawCells()
+        {
+            if (WriteableBitmap is null)
             {
                 return;
             }
