@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameOfLife", "GameOfLife\GameOfLife.csproj", "{7B96AC33-32F6-48FD-B563-0F146C7BADB8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameOfLife", "src\GameOfLife\GameOfLife.csproj", "{7B96AC33-32F6-48FD-B563-0F146C7BADB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameOfLifeWPF", "GameOfLifeWPF\GameOfLifeWPF.csproj", "{F0B35B71-1640-46BB-ADD0-A2733AFDEB05}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameOfLifeWPF", "src\GameOfLifeWPF\GameOfLifeWPF.csproj", "{F0B35B71-1640-46BB-ADD0-A2733AFDEB05}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
