@@ -1,77 +1,59 @@
 import * as THREE from 'three';
 import Stats from 'stats.js';
 import WebGL from 'three/addons/capabilities/WebGL.js';
+import util from 'util'
+import fs from 'fs'
+import path from 'path'
+
+import vertexShader from './shaders/vertexShader.glsl';
+import fragmentShader from './shaders/fragmentShader.glsl';
+
+console.log(vertexShader)
+
+// import vertexShader from './shaders/vertexShader.js'
+// import fragmentShader from './shaders/fragmentShader.js'
 
 var stats = new Stats();
 stats.showPanel(1);
 document.body.appendChild(stats.dom);
 
+// Setup scene, camera, and renderer
 const scene = new THREE.Scene();
-// const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
-// camera.position.z = 5;
-const zoom = 150
-const camera = new THREE.OrthographicCamera(window.innerWidth / -zoom, window.innerWidth / zoom, window.innerHeight / zoom, window.innerHeight / -zoom, -500, 1000);
-
-// Create the renderer
-const renderer = new THREE.WebGLRenderer();
+const camera = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Your 2D array
-const array2D = [
-    [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,],
-    [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,],
-    [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,],
-    [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,],
-    [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,],
-    [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,],
-    [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,],
-    [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,],
-    [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,],
-    [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,],
-    [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,],
-];
+// Adjust camera position
+camera.position.z = 5;
 
-// const array2D = [
-//     [1, 0, 1],
-//     [0, 1, 0],
-//     [1, 0, 1]
-// ];
+// Define the size of the squares and the number of squares
+const squareSize = 200;
+const color = 0xFFFFFF;
+
+const geometry = new THREE.PlaneGeometry(squareSize, squareSize);
+// const material = new THREE.MeshBasicMaterial({ color: color });
+const material = new THREE.ShaderMaterial({
+    uniforms: {},
+    vertexShader: vertexShader,
+    fragmentShader: fragmentShader
+});
+const square = new THREE.Mesh(geometry, material);
+square.position.set(0, 0, 0);
+scene.add(square);
 
 
-// Create the geometry and material for the squares
-const geometry = new THREE.PlaneGeometry(1, 1);
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide });
-
-// Loop through the 2D array
-for (let i = 0; i < array2D.length; i++) {
-    for (let j = 0; j < array2D[i].length; j++) {
-
-        const square = new THREE.Mesh(geometry, material);
-        square.position.x = i - parseInt(array2D.length / 2);
-        console.log(square.position.x)
-        square.position.y = j - parseInt(array2D[i].length / 2);
-
-        // Add the square to the scene
-        scene.add(square);
-    }
-}
-
-
+// Render the scene
 function animate() {
-
     stats.begin();
-
-    // monitored code goes here
     renderer.render(scene, camera);
-
     stats.end();
 
     requestAnimationFrame(animate);
-
 }
 
 if (WebGL.isWebGLAvailable()) {
+    console.log("starting animation...")
     animate();
 } else {
     const warning = WebGL.getWebGLErrorMessage();
